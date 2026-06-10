@@ -16,13 +16,29 @@ case "$COMMAND" in
         fi
 
         HASH=$(echo -n "$CONTENT" | sha256sum | awk '{print $1}')
-
         echo -n "$CONTENT" > "$DB_DIR/$HASH"
         echo "Notiz gespeichert! Hash: $HASH"
         ;;
 
+    list)
+        if [ ! -d "$DB_DIR" ] || [ -z "$(find "$DB_DIR" -type f ! -name ".keep" 2>/dev/null)" ]; then
+            echo "Keine Notizen gefunden."
+            exit 0
+        fi
+
+        for FILE in "$DB_DIR"/*; do
+            if [ -f "$FILE" ] && [ "$(basename "$FILE")" != ".keep" ]; then
+                HASH=$(basename "$FILE")
+                CONTENT=$(cat "$FILE")
+                echo "$HASH  -  $CONTENT"
+            fi
+        done
+        ;;
+
     *)
         echo "note-cli - Ein einfaches Notiz-Tool"
-        echo "Nutzung: ./note.sh add <text>"
+        echo "Nutzung:"
+        echo "  add <text>"
+        echo "  list"
         ;;
 esac
