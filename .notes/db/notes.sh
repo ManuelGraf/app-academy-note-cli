@@ -1,5 +1,5 @@
 #!/bin/bash
-
+#comment!
 DB_DIR=".notes/db"
 mkdir -p "$DB_DIR"
 
